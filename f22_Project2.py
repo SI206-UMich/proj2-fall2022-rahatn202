@@ -1,3 +1,8 @@
+# Your name: Rahat Naseem
+# Your student id: 90389425
+# Your email: rahatn@umich.edu
+# Who you worked with on this homework:
+
 from xml.sax import parseString
 from bs4 import BeautifulSoup
 import re
