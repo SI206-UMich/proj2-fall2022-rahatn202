@@ -30,9 +30,32 @@ def get_listings_from_search_results(html_file):
         ('Loft in Mission District', 210, '1944564'),  # example
     ]
     """
-    pass
+    with open (html_file, "r") as f:
 
+        soup = BeautifulSoup(f, "html.parser")
+        title_lst = []
+        price_lst = []
+        id_lst = []
+        tup_lst = []
+        
+        reg_title = "title_([0-9]+)"
+        titles = soup.find_all("div", class_="t1jojoys dir dir-ltr")
+        for item in titles:
+            title_lst.append(item.text)
+        
+            id = re.findall(reg_title , item.get("id"))
+            for i in id:
 
+                id_lst.append(i)
+        reg_price = "\$[0-9]{1,3}"
+        prices = soup.find_all("span", class_="a8jt5op dir dir-ltr")
+        for item in prices:
+            if "night" in item.text:
+                price = int(re.findall(reg_price, item.text)[0].replace("$", ""))
+                price_lst.append(price)
+        for i in range(len(title_lst)):
+            tup_lst.append((title_lst[i],int(price_lst[i]),id_lst[i]))
+        return tup_lst   
 def get_listing_information(listing_id):
     """
     Write a function to return relevant information in a tuple from an Airbnb listing id.
@@ -57,8 +80,35 @@ def get_listing_information(listing_id):
         number of bedrooms
     )
     """
-    pass
-
+    file_html = f"html_files/listing_{listing_id}.html"
+    with open(file_html, encoding='utf8') as f:
+        soup1 = BeautifulSoup(f, 'html.parser')
+    reg_pending = "pending|Pending"
+    reg_exempt = "exempt|Exempt|not|Not"
+   
+    for item in soup1.find_all("li", class_="f19phm7j dir dir-ltr"):
+        if "Policy" in item.text:
+            policy = item.find('span').text
+            if re.search(reg_pending, policy):
+                policy_name = "Pending"
+            elif re.search(reg_exempt, policy):
+                policy_name = "Exempt"
+            else:
+                policy_name = policy
+    
+    for item in soup1.find("h2"):
+        if "private" in item or "Private" in item:
+            listing_type = "Private Room"
+        elif "shared" in item or "Shared" in item:
+            listing_type = "Shared Room"
+        else:
+            listing_type = "Entire Room"
+    
+    for item in soup1.find_all("li", class_="l7n4lsf dir dir-ltr"):
+        for i in item.find_all("span"):
+            if "bed" in i.text:
+                Num_bed = int(i.text[0])
+    print(policy, listing_type, Num_bed)
 
 def get_detailed_listing_database(html_file):
     """
