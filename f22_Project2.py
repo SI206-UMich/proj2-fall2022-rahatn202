@@ -1,7 +1,7 @@
 # Your name: Rahat Naseem
 # Your student id: 90389425
 # Your email: rahatn@umich.edu
-# Who you worked with on this homework:
+# Who you worked :
 
 from xml.sax import parseString
 from bs4 import BeautifulSoup
@@ -30,9 +30,12 @@ def get_listings_from_search_results(html_file):
         ('Loft in Mission District', 210, '1944564'),  # example
     ]
     """
+    #opening file and creating soup object
     with open (html_file, "r") as f:
 
         soup = BeautifulSoup(f, "html.parser")
+      #will create three lists and one tup list
+      # regex for finding titles, prices and id and add to respective list
         title_lst = []
         price_lst = []
         id_lst = []
@@ -85,15 +88,16 @@ def get_listing_information(listing_id):
     with open(file_html, encoding='utf8') as f:
         soup = BeautifulSoup(f, 'html.parser')
     policy_name = soup.find('li', class_='f19phm7j').span.text
+   
     if "pending" in policy_name.lower():
         policy_name = "Pending"
     elif "not needed" in policy_name.lower() or "exempt" in policy_name.lower():
         policy_name = "Exempt"
     type = soup.find('h2', class_='_14i3z6h').text.lower()
     room_type = "Entire Room"
-    if "private" in type:
+    if "private" in type.lower():
         room_type = "Private Room"
-    elif "shared" in type:
+    elif "shared" in type.lower():
         room_type = "Shared Room"
     num_bed = soup.find_all('li', class_="l7n4lsf")[1].find_all('span')[2].text.split(' ')[0]
     if num_bed == "Studio":
@@ -184,7 +188,7 @@ def check_policy_numbers(data):
         if not x:
             if not re.search("pending|Pending|exempt|Exempt|not|Not", item[3]):
                 policy_lst.append(item[2])
-    print(policy_lst)
+    return policy_lst
 
 
 
@@ -223,7 +227,7 @@ def extra_credit(listing_id):
             else:
                 return True
 
-
+# printiong some information will help to answer the questions.
 
 class TestCases(unittest.TestCase):
 
@@ -253,6 +257,7 @@ class TestCases(unittest.TestCase):
                      "6600081"]
         # call get_listing_information for i in html_list:
         listing_informations = [get_listing_information(id) for id in html_list]
+        
         # check that the number of listing information is correct (5)
         self.assertEqual(len(listing_informations), 5)
         for listing_information in listing_informations:
