@@ -43,6 +43,7 @@ def get_listings_from_search_results(html_file):
         
         reg_title = r"title_([0-9]+)"
         titles = soup.find_all("div", class_="t1jojoys dir dir-ltr")
+       
         for item in titles:
             title_lst.append(item.text)
         
@@ -52,6 +53,7 @@ def get_listings_from_search_results(html_file):
                 id_lst.append(i)
         reg_price = r"\$[0-9]{1,3}"
         prices = soup.find_all("span", class_="a8jt5op dir dir-ltr")
+        
         for item in prices:
             if "night" in item.text:
                 price = int(re.findall(reg_price, item.text)[0].replace("$", ""))
@@ -270,6 +272,7 @@ class TestCases(unittest.TestCase):
             self.assertEqual(type(listing_information[1]), str)
             # check that the third element in the tuple is an int
             self.assertEqual(type(listing_information[2]), int)
+       
         # check that the first listing in the html_list has policy number 'STR-0001541'
         listing_info = get_listing_information(html_list[0])
         self.assertEqual(listing_info[0], 'STR-0001541')
@@ -358,9 +361,14 @@ class TestCases(unittest.TestCase):
     def test_extra_credit(self):
         # check 1944564
         self.assertEqual(extra_credit('1944564'), True)
-
+    
+    def test_extra_credit2(self):
+        # check 16204265
+        self.assertEqual(extra_credit('16204265'), True)
+    
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
     check_policy_numbers(database)
+   
     unittest.main(verbosity=2)
